@@ -50,7 +50,14 @@ int main() {
     wavh.data_length = buffer_size * wavh.bytes_per_sample;
     wavh.file_length = wavh.data_length + header_length;
     
-    short int buffer[buffer_size] = {};
+    short int *buffer;
+    // Allocate memory for buffer dynamically based on buffer_size
+    buffer = malloc(buffer_size * sizeof(short int));
+    if (buffer == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1; // Return an error code
+    }
+
 
     for (int i = 0; i < buffer_size; i++) {
         buffer[i] = (short int)(1000 * cos((2 * M_PI * 256.0 * i) / sample_rate));
@@ -61,6 +68,9 @@ int main() {
     // Taking adress of first item of array / struct, then writing into fp the correct number of elements
     fwrite(&wavh, 1, sizeof(wavh), fp);
     fwrite(&(buffer[0]), 2, buffer_size, fp); // 2 bytes because item is of type short int
+
+    // Freeing allocated memory
+    free(buffer);
 
     return 0;
 }
