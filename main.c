@@ -1,7 +1,7 @@
-#include "stdio.h";
-#include "stdint.h";
-#include "string.h";
-#include "math.h";
+#include "stdio.h"
+#include "stdint.h"
+#include "string.h"
+#include "math.h"
 
 #define M_PI (3.14159265358979323846)
 
@@ -27,8 +27,6 @@ struct wav_header {
 int main() {
     const int sample_rate = 8000;
 
-
-
     struct wav_header wavh;
 
     // Look up https://docs.fileformat.com/audio/wav/ for more info on this
@@ -51,7 +49,18 @@ int main() {
 
     wavh.data_length = buffer_size * wavh.bytes_per_sample;
     wavh.file_length = wavh.data_length + header_length;
- 
-   
+    
+    short int buffer[buffer_size] = {};
+
+    for (int i = 0; i < buffer_size; i++) {
+        buffer[i] = (short int)(1000 * cos((2 * M_PI * 256.0 * i) / sample_rate));
+    }
+    
+    FILE *fp = fopen("test.wav", "w");
+
+    // Taking adress of first item of array / struct, then writing into fp the correct number of elements
+    fwrite(&wavh, 1, sizeof(wavh), fp);
+    fwrite(&(buffer[0]), 2, buffer_size, fp); // 2 bytes because item is of type short int
+
     return 0;
 }
