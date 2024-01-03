@@ -55,12 +55,12 @@ const float Fs5 = 739.99;
 
 const int num_measures_to_play = 4 * 4;
 const int sample_rate = 16000;
-const int beats_per_measure = 12;
-const int ms_per_beat = 150;
+const int beats_per_measure = 4;
+const int ms_per_beat = 500;
 // IF YOU MODIFY ABOVE< MODIFY BELOW
-const int samples_per_beat = (16000 * 150) / 1000;    // samples_per_beat = (sample_rate * ms_per_beat) / 1000;, have to write manually because otherwise it won't compile (initialization of variables at file scope (outside any function) requires constant expressions)
+const int samples_per_beat = (16000 * 500) / 1000;    // samples_per_beat = (sample_rate * ms_per_beat) / 1000;, have to write manually because otherwise it won't compile (initialization of variables at file scope (outside any function) requires constant expressions)
 const int header_length = 44;
-const int buffer_size = (4*4) * (12) * ((16000*150)/1000); // num_measures_to_play * beats_per_measure * samples_per_beat;, save reason as above
+const int buffer_size = (4*4) * (4) * ((16000*500)/1000); // num_measures_to_play * beats_per_measure * samples_per_beat;, save reason as above
 short int *buffer;
 
 
@@ -76,7 +76,7 @@ void play(float freq, float duration, int measure, float beat)
 
     // Defining amplitude according to approximated sound plot found here https://www.teachmeaudio.com/application/files/7615/8662/7043/adsr.png
     // Though we set it up so that there is no sustain phase
-    for (int i = start_index; i < end_index; i++) 
+    /*for (int i = start_index; i < end_index; i++) 
     {
         float percent_through_note = ((float)i - start_index) / (end_index - start_index);
         float amplitude_multiplier = 1.0f;  // f to indicate that it is a single-precision floating-point constant
@@ -94,8 +94,16 @@ void play(float freq, float duration, int measure, float beat)
             amplitude_multiplier = 1 - percent_through_note;
         }
         
-        buffer[i] += (short int)(amplitude_multiplier * 3000* cos((2 * M_PI * freq * i) / sample_rate));
+        buffer[i] += (short int)(amplitude_multiplier * 50* cos((2 * M_PI * freq * i) / sample_rate));
+    }*/
+
+    ///////////////////////////////////////////// TEMPORARY, BELOW TO BE REMOVED
+    for (int i = start_index; i < end_index; i++) 
+    {
+        buffer[i] = (short int)(50 * cos((2 * M_PI * freq * i) / sample_rate));
     }
+    ///////////////////////////////////////////// TEMPORARY, ABOVE TO BE REMOVED
+
 }
 
 // chord functions
@@ -171,44 +179,48 @@ int main()
 
     while (measure < num_measures_to_play)
     {
-        GMajor(6, measure, 0);
+        play(G4, 4, measure, 0);
+        /*GMajor(6, measure, 0);
         GMajor(1, measure, 3);
         GMajor(1, measure, 4);
         GMajor(1, measure, 5);
         GMajor(6, measure, 6);
         GMajor(1, measure, 9);
         GMajor(1, measure, 10);
-        GMajor(1, measure, 11);
+        GMajor(1, measure, 11);*/
 
         measure++;
-        EMinor(6, measure, 0);
+        play(E4, 4, measure, 0);
+        /*EMinor(6, measure, 0);
         EMinor(1, measure, 3);
         EMinor(1, measure, 4);
         EMinor(1, measure, 5);
         EMinor(6, measure, 6);
         EMinor(1, measure, 9);
         EMinor(1, measure, 10);
-        EMinor(1, measure, 11);
+        EMinor(1, measure, 11);*/
         
         measure++;
-        CMajor(6, measure, 0);
+        play(E4, 4, measure, 0);
+        /*CMajor(6, measure, 0);
         CMajor(1, measure, 3);
         CMajor(1, measure, 4);
         CMajor(1, measure, 5);
         CMajor(6, measure, 6);
         CMajor(1, measure, 9);
         CMajor(1, measure, 10);
-        CMajor(1, measure, 11);
+        CMajor(1, measure, 11);*/
         
         measure++;
-        DMajor(6, measure, 0);
+        play(Fs4, 4, measure, 0);
+        /*DMajor(6, measure, 0);
         DMajor(1, measure, 3);
         DMajor(1, measure, 4);
         DMajor(1, measure, 5);
         DMajor(6, measure, 6);
         DMajor(1, measure, 9);
         DMajor(1, measure, 10);
-        DMajor(1, measure, 11);
+        DMajor(1, measure, 11);*/
         
         measure++;
     }
