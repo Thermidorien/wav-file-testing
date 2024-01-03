@@ -57,10 +57,11 @@ const int num_measures_to_play = 4 * 4;
 const int sample_rate = 16000;
 const int beats_per_measure = 12;
 const int ms_per_beat = 150;
-const int samples_per_beat = (sample_rate * ms_per_beat) / 1000;
+// IF YOU MODIFY ABOVE< MODIFY BELOW
+const int samples_per_beat = (16000 * 150) / 1000;    // samples_per_beat = (sample_rate * ms_per_beat) / 1000;, have to write manually because otherwise it won't compile (initialization of variables at file scope (outside any function) requires constant expressions)
 const int header_length = 44;
-const int buffer_size = num_measures_to_play * beats_per_measure * samples_per_beat;
-short int buffer[buffer_size] = {};
+const int buffer_size = (4*4) * (12) * ((16000*150)/1000); // num_measures_to_play * beats_per_measure * samples_per_beat;, save reason as above
+short int *buffer;
 
 
 // Function defining the action of playing a single note
@@ -157,6 +158,14 @@ int main()
     wavh.bytes_per_second = wavh.sample_rate * wavh.bytes_per_sample;
     wavh.data_length = buffer_size * wavh.bytes_per_sample;
     wavh.file_length = wavh.data_length + header_length;
+
+
+    // Allocate memory for buffer dynamically based on buffer_size
+    buffer = malloc(buffer_size * sizeof(short int));
+    if (buffer == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1; // Return an error code
+    }
     
     int measure = 0;
 
@@ -210,8 +219,6 @@ int main()
     fwrite(&wavh, 1, sizeof(wavh), fp);
     fwrite(&(buffer[0]), 2, buffer_size, fp); // 2 bytes because item is of type short int
 
-    // Freeing allocated memory
-    free(buffer);
-
+    free(buffer); 
     return 0;
 }
