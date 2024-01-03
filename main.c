@@ -9,19 +9,19 @@ struct wav_header {
 
     // Look up https://docs.fileformat.com/audio/wav/ for more info on this
 
-    char riff[4];
-    int32_t file_length;
-    char wave[4];
-    char format[4];
-    int32_t chunk_size;
-    int16_t format_tag;
-    int16_t num_channels;
-    int32_t sample_rate;
-    int32_t bytes_per_second;
-    int16_t bytes_per_sample;
-    int16_t bits_per_sample;
-    char data[4];
-    int32_t data_length;
+    char riff[4];               // "RIFF"
+    int32_t file_length;        // file length in bytes
+    char wave[4];               // ""WAVEfile length in bytes""
+    char format[4];             // "fmt "
+    int32_t chunk_size;         // FMT chunk size in bytes (usually 16)
+    int16_t format_tag;         // 1=PCM, 257=Mu-Law, 258=A-Law, 259=ADPCM
+    int16_t num_channels;       // 1=mono, 2=stereo
+    int32_t sample_rate;        // Sampling rate in samples per second
+    int32_t bytes_per_second;   // bytes per second = sample_rate * bytes_per_sample
+    int16_t bytes_per_sample;   // 2=16-bit mono, 4=16-bit stereo
+    int16_t bits_per_sample;    // number of bits per sample
+    char data[4];               // "data"
+    int32_t data_length;        // data length in bytes (filelength - 44) where 44 is the header length
 };
 
 int main() {
@@ -60,7 +60,7 @@ int main() {
 
 
     for (int i = 0; i < buffer_size; i++) {
-        buffer[i] = (short int)(1000 * cos((2 * M_PI * 256.0 * i) / sample_rate));
+        buffer[i] = (short int)(20000 * cos((2 * M_PI * 256.0 * i) / sample_rate));
     }
     
     FILE *fp = fopen("test.wav", "w");
